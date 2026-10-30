@@ -1,2 +1,2 @@
-// O valor vem do painel do Formspree. O ID não é segredo; fica separado para facilitar a troca.
-window.FORMSPREE_ID = 'SEU_ID_AQUI';
+// O ID vem do painel do Formspree. Não inclua dados sensíveis neste arquivo; o ID não é segredo.
+window.FORMSPREE_ID = 'mvkkbbng';

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Arte Abstrata | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        canvas { aspect-ratio: 1 / 1; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 p-6 text-gray-900">
+    <main class="mx-auto w-full max-w-3xl rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm md:p-10">
+        <header class="mb-8 text-center">
+            <h1 class="mb-3 text-4xl font-black tracking-tighter text-fuchsia-600 md:text-5xl">Gerador de Arte Abstrata</h1>
+            <p class="text-lg text-gray-600">Descreva o que você imagina e deixe a nossa IA interpretar à sua maneira.</p>
+        </header>
+
+        <form id="form-arte" class="mb-6 space-y-3">
+            <label for="prompt" class="block text-sm font-bold uppercase tracking-wide text-gray-700">Seu prompt</label>
+            <textarea id="prompt" maxlength="140" rows="3" placeholder="Descreva a imagem que você imagina..." class="w-full resize-y rounded-lg border-2 border-gray-200 bg-gray-50 px-4 py-3 focus:border-fuchsia-600 focus:bg-white focus:outline-none"></textarea>
+            <p id="contador" class="text-right text-xs text-gray-500">0 / 140</p>
+            <button id="btn-gerar" type="submit" class="w-full rounded-lg bg-fuchsia-600 px-6 py-4 text-lg font-bold text-white transition-colors hover:bg-fuchsia-700">
+                Gerar imagem
+            </button>
+        </form>
+
+        <p id="mensagem-processamento" class="mb-4 min-h-6 text-center text-sm font-semibold text-fuchsia-700" role="status" aria-live="polite"></p>
+
+        <div class="mx-auto w-full max-w-[600px]">
+            <canvas id="tela-arte" width="600" height="600" role="img" aria-label="Arte abstrata gerada a partir do texto informado" class="block h-auto w-full rounded-lg border border-gray-200 bg-white">
+                Seu navegador não consegue desenhar a sua imaginação.
+            </canvas>
+            <p id="fallback-canvas" class="hidden mt-3 rounded-lg border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-600">Seu navegador não consegue desenhar a sua imaginação.</p>
+            <p class="mt-3 text-center text-xs text-gray-500">Imagem gerada localmente a partir do seu texto. Nenhuma IA foi consultada. A interpretação é livre.</p>
+        </div>
+
+        <div id="acoes-arte" class="mt-6 hidden grid-cols-1 gap-3 sm:grid-cols-2">
+            <button id="btn-variacao" type="button" class="rounded-lg border-2 border-fuchsia-600 px-5 py-3 font-bold text-fuchsia-700 transition-colors hover:bg-fuchsia-50">
+                Gerar outra variação
+            </button>
+            <button id="btn-baixar" type="button" class="rounded-lg bg-gray-900 px-5 py-3 font-bold text-white transition-colors hover:bg-gray-700">
+                Baixar PNG
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('tela-arte');
+        const context = typeof canvas.getContext === 'function' ? canvas.getContext('2d') : null;
+        const promptField = document.getElementById('prompt');
+        const promptCounter = document.getElementById('contador');
+        const form = document.getElementById('form-arte');
+        const generateButton = document.getElementById('btn-gerar');
+        const variationButton = document.getElementById('btn-variacao');
+        const downloadButton = document.getElementById('btn-baixar');
+        const actions = document.getElementById('acoes-arte');
+        const processingMessage = document.getElementById('mensagem-processamento');
+        const canvasFallback = document.getElementById('fallback-canvas');
+        const processMessages = [
+            'Interpretando seu prompt...',
+            'Ajustando os parâmetros criativos...',
+            'Aplicando um estilo que não existe...',
+            'Finalizando a obra...'
+        ];
+        const palettes = [
+            { background: '#fff8e7', colors: ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#8338ec', '#fb5607', '#3a86ff'] },
+            { background: '#f1f0ff', colors: ['#ff006e', '#8338ec', '#3a86ff', '#00b4d8', '#ffbe0b', '#fb5607', '#80ed99'] },
+            { background: '#f5fff7', colors: ['#d00000', '#ffba08', '#3f88c5', '#032b43', '#136f63', '#f72585', '#7209b7'] },
+            { background: '#fff2f2', colors: ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93', '#ff70a6', '#70d6ff'] }
+        ];
+
+        let frameId = null;
+        let processingTimer = null;
+        let messageTimer = null;
+        let variation = 0;
+        let baseSeed = 0;
+        let isGenerating = false;
+
+        if (!context) {
+            form.classList.add('hidden');
+            canvas.classList.add('hidden');
+            canvasFallback.classList.remove('hidden');
+        }
+
+        promptField.addEventListener('input', () => {
+            promptCounter.textContent = `${promptField.value.length} / 140`;
+            if (frameId !== null) {
+                cancelAnimationFrame(frameId);
+                frameId = null;
+            }
+            clearTimeout(processingTimer);
+            clearInterval(messageTimer);
+            if (isGenerating) {
+                processingMessage.textContent = '';
+                setGenerating(false);
+            }
+        });
+
+        function hashPrompt(text) {
+            const normalized = text.toLowerCase().trim().replace(/\s+/g, ' ');
+            let hash = 0x811c9dc5;
+            for (let index = 0; index < normalized.length; index += 1) {
+                hash ^= normalized.charCodeAt(index);
+                hash = Math.imul(hash, 0x01000193);
+            }
+            return hash >>> 0;
+        }
+
+        function createRandom(seed) {
+            return function random() {
+                seed = (seed + 0x6d2b79f5) | 0;
+                let value = seed;
+                value = Math.imul(value ^ (value >>> 15), value | 1);
+                value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+                return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+
+        function randomBetween(random, minimum, maximum) {
+            return minimum + random() * (maximum - minimum);
+        }
+
+        function createStrokes(seed) {
+            const random = createRandom(seed);
+            const palette = palettes[Math.floor(random() * palettes.length)];
+            const strokes = [];
+            const strokeCount = Math.floor(randomBetween(random, 40, 121));
+
+            for (let index = 0; index < strokeCount; index += 1) {
+                const startX = randomBetween(random, -40, 640);
+                const startY = randomBetween(random, -40, 640);
+                const endX = randomBetween(random, -40, 640);
+                const endY = randomBetween(random, -40, 640);
+                const control1X = randomBetween(random, -80, 680);
+                const control1Y = randomBetween(random, -80, 680);
+                const control2X = randomBetween(random, -80, 680);
+                const control2Y = randomBetween(random, -80, 680);
+
+                strokes.push({
+                    startX, startY, endX, endY, control1X, control1Y, control2X, control2Y,
+                    shape: random(),
+                    loop: random() < 0.16,
+                    width: randomBetween(random, 1, 8),
+                    color: palette.colors[Math.floor(random() * palette.colors.length)],
+                    opacity: randomBetween(random, 0.5, 1),
+                    angle: randomBetween(random, 0, Math.PI * 2),
+                    length: randomBetween(random, 20, 180)
+                });
+            }
+
+            return { palette, strokes };
+        }
+
+        function drawStroke(stroke) {
+            context.beginPath();
+            context.moveTo(stroke.startX, stroke.startY);
+
+            if (stroke.loop) {
+                context.bezierCurveTo(
+                    stroke.startX + Math.cos(stroke.angle) * stroke.length,
+                    stroke.startY + Math.sin(stroke.angle) * stroke.length,
+                    stroke.startX - Math.sin(stroke.angle) * stroke.length,
+                    stroke.startY + Math.cos(stroke.angle) * stroke.length,
+                    stroke.startX,
+                    stroke.startY
+                );
+            } else if (stroke.shape < 0.34) {
+                context.quadraticCurveTo(stroke.control1X, stroke.control1Y, stroke.endX, stroke.endY);
+            } else if (stroke.shape < 0.67) {
+                context.bezierCurveTo(stroke.control1X, stroke.control1Y, stroke.control2X, stroke.control2Y, stroke.endX, stroke.endY);
+            } else {
+                context.lineTo(stroke.endX, stroke.endY);
+            }
+
+            context.strokeStyle = stroke.color;
+            context.globalAlpha = stroke.opacity;
+            context.lineWidth = stroke.width;
+            context.lineCap = 'round';
+            context.stroke();
+            context.globalAlpha = 1;
+        }
+
+        function drawArtwork(seed) {
+            if (frameId !== null) {
+                cancelAnimationFrame(frameId);
+                frameId = null;
+            }
+
+            const { palette, strokes } = createStrokes(seed);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = palette.background;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            let strokeIndex = 0;
+            function drawBatch() {
+                const batchEnd = Math.min(strokeIndex + 6, strokes.length);
+                while (strokeIndex < batchEnd) {
+                    drawStroke(strokes[strokeIndex]);
+                    strokeIndex += 1;
+                }
+
+                if (strokeIndex < strokes.length) {
+                    frameId = requestAnimationFrame(drawBatch);
+                } else {
+                    frameId = null;
+                    actions.classList.remove('hidden');
+                    actions.classList.add('grid');
+                    setGenerating(false);
+                }
+            }
+
+            frameId = requestAnimationFrame(drawBatch);
+        }
+
+        function setGenerating(generating) {
+            isGenerating = generating;
+            generateButton.disabled = generating;
+            variationButton.disabled = generating;
+            downloadButton.disabled = generating;
+            generateButton.classList.toggle('opacity-60', generating);
+            variationButton.classList.toggle('opacity-60', generating);
+            downloadButton.classList.toggle('opacity-60', generating);
+        }
+
+        function startGeneration(seed, waitForProcessing) {
+            if (!context) return;
+
+            if (frameId !== null) {
+                cancelAnimationFrame(frameId);
+                frameId = null;
+            }
+            clearTimeout(processingTimer);
+            clearInterval(messageTimer);
+            actions.classList.add('hidden');
+            actions.classList.remove('grid');
+            setGenerating(true);
+
+            if (!waitForProcessing) {
+                processingMessage.textContent = '';
+                drawArtwork(seed);
+                return;
+            }
+
+            let messageIndex = 0;
+            processingMessage.textContent = processMessages[messageIndex];
+            messageTimer = setInterval(() => {
+                messageIndex = (messageIndex + 1) % processMessages.length;
+                processingMessage.textContent = processMessages[messageIndex];
+            }, 400);
+            processingTimer = setTimeout(() => {
+                clearInterval(messageTimer);
+                processingMessage.textContent = '';
+                drawArtwork(seed);
+            }, 2000);
+        }
+
+        function currentPromptSeed() {
+            const prompt = promptField.value.trim() || 'arte sem intenção';
+            return hashPrompt(prompt);
+        }
+
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            if (isGenerating) return;
+            variation = 0;
+            baseSeed = currentPromptSeed();
+            startGeneration(baseSeed, true);
+        });
+
+        variationButton.addEventListener('click', () => {
+            if (isGenerating) return;
+            variation += 1;
+            startGeneration((baseSeed + variation) >>> 0, false);
+        });
+
+        downloadButton.addEventListener('click', () => {
+            if (isGenerating || !context) return;
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'arte-abstrata.png';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        });
+    </script>
+</body>
+</html>
