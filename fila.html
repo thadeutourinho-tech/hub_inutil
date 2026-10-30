@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Espera | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Animação para o ticket piscando */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-blink { animation: blink 2s infinite; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-6">
+    
+    <div class="max-w-2xl w-full bg-white border-4 border-gray-900 rounded-none p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-center flex-grow flex flex-col justify-center">
+        
+        <!-- Tela 1: Pegar Senha -->
+        <div id="tela-inicio">
+            <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">Atendimento</h1>
+            <p class="text-lg text-gray-600 mb-10">Retire sua senha para o absoluto nada. Aguarde sua vez com disciplina.</p>
+            <button id="btn-entrar" class="px-10 py-5 bg-red-600 text-white font-black text-2xl uppercase tracking-widest hover:bg-red-700 transition-colors shadow-lg active:scale-95">
+                Pegar Senha
+            </button>
+        </div>
+
+        <!-- Tela 2: A Fila -->
+        <div id="tela-fila" class="hidden flex flex-col items-center">
+            <p class="text-gray-500 font-bold uppercase tracking-widest mb-4">Sua posição atual:</p>
+            
+            <div class="bg-black text-red-500 font-mono text-7xl md:text-9xl py-8 px-12 rounded-lg border-8 border-gray-800 shadow-inner mb-8 animate-blink w-full">
+                <span id="numero-fila">---</span>
+            </div>
+
+            <p id="mensagem-status" class="text-lg text-gray-700 font-medium h-16">
+                Aguarde. A fila está andando.
+            </p>
+            
+            <div class="mt-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 text-sm text-left w-full">
+                <strong>Atenção:</strong> Não mude de aba nem minimize o navegador. A burocracia exige foco total.
+            </div>
+        </div>
+
+        <!-- Tela 3: O Fim -->
+        <div id="tela-fim" class="hidden">
+            <h2 class="text-5xl font-black text-gray-900 mb-6">Sua vez chegou.</h2>
+            <p class="text-xl text-gray-600 mb-10">A experiência terminou. Não há prêmio, não há atendimento. Você apenas perdeu tempo de vida de forma irrevogável.</p>
+            <button id="btn-reiniciar" class="px-8 py-4 bg-black text-white font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                Voltar para o final da fila
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const telaInicio = document.getElementById('tela-inicio');
+        const telaFila = document.getElementById('tela-fila');
+        const telaFim = document.getElementById('tela-fim');
+        
+        const btnEntrar = document.getElementById('btn-entrar');
+        const btnReiniciar = document.getElementById('btn-reiniciar');
+        const displayNumero = document.getElementById('numero-fila');
+        const mensagemStatus = document.getElementById('mensagem-status');
+
+        let posicaoAtual = 0;
+        let intervaloFila = null;
+        let filaAtiva = false;
+        let abaOculta = false;
+        let avisoPenalidadeAte = 0;
+
+        // Inicia a tortura
+        btnEntrar.addEventListener('click', () => {
+            telaInicio.classList.add('hidden');
+            telaFila.classList.remove('hidden');
+            
+            // Define um número de início dolorosamente alto
+            posicaoAtual = Math.floor(Math.random() * (9999 - 3000 + 1)) + 3000;
+            atualizarDisplay();
+            
+            filaAtiva = true;
+            iniciarContagem();
+        });
+
+        function atualizarDisplay() {
+            // Formata com zeros à esquerda (ex: 0453)
+            displayNumero.textContent = posicaoAtual.toString().padStart(4, '0');
+        }
+
+        function iniciarContagem() {
+            // A fila anda a cada 1.5 a 3.5 segundos
+            const tempoEspera = Math.random() * 2000 + 1500;
+            
+            intervaloFila = setTimeout(() => {
+                if (!filaAtiva) return;
+
+                // A fila pode andar rápido ou engarrafar (cai de 1 a 15 posições)
+                const avanço = Math.floor(Math.random() * 15) + 1;
+                posicaoAtual -= avanço;
+
+                if (posicaoAtual <= 0) {
+                    posicaoAtual = 0;
+                    atualizarDisplay();
+                    finalizarFila();
+                } else {
+                    atualizarDisplay();
+                    if (Date.now() >= avisoPenalidadeAte) {
+                        mensagemStatus.textContent = "Aguarde. A fila está andando.";
+                        mensagemStatus.classList.remove('text-red-600', 'font-bold');
+                    }
+                    iniciarContagem(); // Chama recursivamente
+                }
+            }, tempoEspera);
+        }
+
+        function finalizarFila() {
+            filaAtiva = false;
+            clearTimeout(intervaloFila);
+            setTimeout(() => {
+                telaFila.classList.add('hidden');
+                telaFim.classList.remove('hidden');
+            }, 1000);
+        }
+
+        // Punição por mudar de aba
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && filaAtiva && !abaOculta) {
+                abaOculta = true;
+                // Usuário saiu da aba: adiciona penalidade
+                const penalidade = Math.floor(Math.random() * 100) + 50;
+                posicaoAtual += penalidade;
+                atualizarDisplay();
+                avisoPenalidadeAte = Date.now() + 4000;
+                
+                mensagemStatus.textContent = `Falta de atenção detectada! Você perdeu o lugar e ${penalidade} pessoas passaram na sua frente.`;
+                mensagemStatus.classList.add('text-red-600', 'font-bold');
+            } else if (!document.hidden) {
+                abaOculta = false;
+            }
+        });
+
+        // Reinicia para os masoquistas
+        btnReiniciar.addEventListener('click', () => {
+            telaFim.classList.add('hidden');
+            telaInicio.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

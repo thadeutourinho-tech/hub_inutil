@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradutor de Ofensas | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        @keyframes tremer {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            20% { transform: translate(-3px, 2px) rotate(-0.5deg); }
+            40% { transform: translate(3px, -2px) rotate(0.5deg); }
+            60% { transform: translate(-2px, -1px) rotate(-0.3deg); }
+            80% { transform: translate(2px, 1px) rotate(0.3deg); }
+        }
+        .tremer { animation: tremer 0.4s ease-in-out 2; }
+        .cursor::after { content: "▌"; animation: piscar 0.8s steps(2) infinite; color: #facc15; }
+        @keyframes piscar { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-[#1a1a1a] text-gray-100 min-h-screen flex flex-col items-center p-6 font-sans">
+
+    <div class="max-w-3xl w-full bg-[#242424] border border-gray-700 rounded-xl p-8 md:p-12 shadow-2xl">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-yellow-500 mb-4 font-['Playfair_Display']">Tradutor de Ofensas</h1>
+            <p class="text-lg text-gray-400">
+                Eleve o nível do seu ódio. Digite um xingamento, escolha um estilo (ou deixe o caos decidir) e saia da briga como um cavalheiro insuportável.
+            </p>
+        </div>
+
+        <div class="mb-6">
+            <label for="modo" class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Estilo da ofensa</label>
+            <select id="modo" class="w-full p-3 bg-[#1a1a1a] border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-yellow-500">
+                <option value="caos">🌪️ Caos total (sorteia a cada vez)</option>
+                <option value="shakespeare">🎭 Shakespeare em crise existencial</option>
+                <option value="machado">🎩 Machado de Assis, cínico e defunto</option>
+                <option value="latim">🏛️ Latim de sala de aula, mal decorado</option>
+                <option value="nobreza">👑 Nobreza decadente, sem herdeiros</option>
+                <option value="pirata">🏴‍☠️ Pirata do século XVIII, mal-humorado</option>
+                <option value="narrador">📺 Narrador de futebol em surto</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex flex-col">
+                <label for="texto-plebeu" class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Insulto Plebeu (O que você quer dizer)</label>
+                <textarea id="texto-plebeu" rows="6" class="w-full p-4 bg-[#1a1a1a] border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:border-yellow-500 resize-none transition-colors" placeholder="Ex.: burro, chato, lixo..."></textarea>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Ofensa Aristocrática (O que você deve dizer)</label>
+                <div id="resultado-box" class="w-full p-4 bg-black border border-gray-800 rounded-lg h-full min-h-[10rem] flex flex-col items-center justify-center relative overflow-hidden">
+                    <p id="texto-resultado" class="text-gray-600 font-['Playfair_Display'] text-xl italic text-center">Aguardando a sua fúria...</p>
+                    <p id="erudicao" class="mt-4 text-xs font-bold uppercase tracking-widest text-gray-500 hidden"></p>
+
+                    <div id="overlay-processando" class="absolute inset-0 bg-black flex flex-col items-center justify-center hidden">
+                        <div class="w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p id="mensagem-carregando" class="text-xs font-bold text-yellow-500 uppercase tracking-widest text-center px-4">Elevando o vocabulário...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-traduzir" class="w-full mt-8 px-8 py-4 bg-yellow-600 text-black font-black text-lg uppercase tracking-widest rounded-lg hover:bg-yellow-500 transition-colors shadow-lg">
+            Traduzir para o Erudito
+        </button>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <button id="btn-outra" class="px-4 py-3 bg-transparent border border-yellow-600 text-yellow-500 font-bold text-sm uppercase tracking-widest rounded-lg hover:bg-yellow-900/30 hidden transition-colors">
+                Outra ofensa
+            </button>
+            <button id="btn-copiar" class="px-4 py-3 bg-transparent border border-gray-600 text-gray-300 font-bold text-sm uppercase tracking-widest rounded-lg hover:bg-gray-800 hidden transition-colors">
+                Copiar Insulto
+            </button>
+            <button id="btn-whatsapp" class="px-4 py-3 bg-transparent border border-green-700 text-green-500 font-bold text-sm uppercase tracking-widest rounded-lg hover:bg-green-900/30 hidden transition-colors">
+                Mandar no WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const btnTraduzir = document.getElementById('btn-traduzir');
+        const btnOutra = document.getElementById('btn-outra');
+        const btnCopiar = document.getElementById('btn-copiar');
+        const btnWhats = document.getElementById('btn-whatsapp');
+        const inputPlebeu = document.getElementById('texto-plebeu');
+        const modo = document.getElementById('modo');
+        const textoResultado = document.getElementById('texto-resultado');
+        const erudicao = document.getElementById('erudicao');
+        const overlay = document.getElementById('overlay-processando');
+        const mensagemCarregando = document.getElementById('mensagem-carregando');
+        const resultadoBox = document.getElementById('resultado-box');
+
+        let ultimoInsulto = "";
+        let digitando = null;
+        let intervaloMensagens = null;
+
+        // REGRA DE COERÊNCIA: toda entrada do dicionário é um sintagma masculino singular
+        // começando com "um", para que possa ser combinada com "és {x}" e listas com "e".
+        const dicionario = {
+            "burro": "um obtuso de carteirinha",
+            "idiota": "um estulto de marca maior",
+            "imbecil": "um pusilânime de baixa estirpe",
+            "otário": "um crédulo de tamanho considerável",
+            "feio": "um espetáculo de aparência lastimável",
+            "chato": "um tormento pusilânime",
+            "lixo": "um resíduo de moral ínfima",
+            "merda": "um excremento de origem duvidosa",
+            "bosta": "um dejeto de qualidade questionável",
+            "preguiçoso": "um adepto convicto da inércia",
+            "fedido": "um tratado ambulante de odor",
+            "mentiroso": "um fabricante de fábulas insolentes",
+            "ladrão": "um expropriador de bens alheios",
+            "fofoqueiro": "um cronista sem licença da verdade",
+            "cara": "um indivíduo de fisionomia infausta",
+            "trouxa": "um pateta voluntário de si mesmo",
+            "maluco": "um cidadão de juízo exilado",
+            "nojento": "um espécime de repulsa notória",
+            "ridículo": "um espetáculo digno de galhofa pública",
+            "fraco": "um ser de vigor inexistente",
+            "bobo": "um sujeito de discernimento amputado",
+            "vagabundo": "um ocioso de ofício",
+            "chorão": "um lamentador profissional"
+        };
+
+        // Cada estilo tem frases completas com {sub} (sintagma com artigo "um")
+        // e {adj} (adjetivo masculino singular). Nada é combinado ao acaso.
+        const estilos = {
+            shakespeare: {
+                subs: ["um bufão de ato terceiro", "um rei da Dinamarca de pacotilha", "um fantasma sem fala", "um Iago de cortiço", "um Hamlet de fim de semana"],
+                adjs: ["lastimável", "espúrio", "tresloucado", "miserável", "pútrido", "sanguinolento"],
+                frases: [
+                    "Ó tu, {sub}, {adj}!",
+                    "Não passas de {sub}, e ainda {adj}.",
+                    "Que a peste te leve, pois és {sub}, {adj}."
+                ],
+                fechos: ["Que a tragédia te alcance.", "Morre, e não resta nem a peça."]
+            },
+            machado: {
+                subs: ["um defunto medíocre", "um Brás Cubas de quintal", "um Bentinho de subúrbio", "um escrivão de desgostos", "um cronista de cão"],
+                adjs: ["ceticíssimo", "obsoleto", "melancólico", "elegantemente desprezível", "sem sal"],
+                frases: [
+                    "Confesso, com tristeza póstuma, que és {sub}, {adj}.",
+                    "Do alto do meu túmulo, declaro que és {sub}.",
+                    "Não é preciso ser {adj} para perceber que és {sub}."
+                ],
+                fechos: ["Digo-o sem rancor, mas com o ofício.", "Eis a minha única virtude."]
+            },
+            latim: {
+                subs: ["um idiota magnus", "um burro sine causa", "um troglodita latinus", "um pedagogo fugiens", "um asinus classicus"],
+                adjs: ["absurdus", "stultus", "miserabilis", "ignobilis", "vulgaris"],
+                frases: [
+                    "Ecce, {sub}, {adj}!",
+                    "Quod erat demonstrandum: és {sub}, {adj}.",
+                    "Nam tu, vere, es {sub}, {adj}."
+                ],
+                fechos: ["Ad nauseam.", "Quod erat demonstrandum, infelizmente."]
+            },
+            nobreza: {
+                subs: ["um plebeu coroado", "um barão de bolso", "um conde de lama", "um saco de batatas condecorado", "um duque de um cômodo só"],
+                adjs: ["infausto", "sem brasão", "de linhagem duvidosa", "pedante de sala", "desprovido de modos"],
+                frases: [
+                    "Vossa Excelência é, sem sombra de dúvida, {sub}, {adj}.",
+                    "Sua Majestade deplora que sejas {sub}, {adj}.",
+                    "Por decreto real, declaro-te {sub}, {adj}."
+                ],
+                fechos: ["Está dispensado, com a devida vênia.", "Retire-se antes que o mordomo chame a guarda."]
+            },
+            pirata: {
+                subs: ["um grumete mal lavado", "um marujo de água doce", "um capitão de banheira", "um papagaio sem bico", "um tripulante de bote furado"],
+                adjs: ["fedorento", "desertor de navio", "reles", "sem rum", "de pernas bambas"],
+                frases: [
+                    "Arrr, tu não passas de {sub}, {adj}.",
+                    "Escuta aqui, cabra: és {sub}, {adj}!",
+                    "Pelas barbas de Netuno, és {sub}, {adj}."
+                ],
+                fechos: ["Vai pro fundo do mar, ou eu te jogo.", "Dez mil piastras se tu sumires agora."]
+            },
+            narrador: {
+                subs: ["um zagueiro de si mesmo", "um volante de circo", "um pontinha de cadeira", "um lateral de ilusão", "um goleiro de vidro"],
+                adjs: ["desesperado", "irreversível", "inacreditável", "sem nenhuma técnica", "fora de sincronia"],
+                frases: [
+                    "É, meu amigo, {sub}, {adj}!",
+                    "AAAAH! Que lance! Você é {sub}, {adj}!",
+                    "E o juiz apita: {sub}, {adj}."
+                ],
+                fechos: ["Que lance, que lance, que lance!", "Não tem explicação, amigos, não tem."]
+            }
+        };
+
+        // Molduras do dicionário: todas usam "és" e recebem sintagmas "um ..."
+        const molduras = [
+            "És {x}, e nada mais.",
+            "Ó tu, és {x}. Não tenho nada a acrescentar.",
+            "Consta nos autos que és {x}.",
+            "Digo-te com toda a afeição: és {x}."
+        ];
+
+        const mensagensCarregando = [
+            "Consultando o dicionário de Aurélio...",
+            "Desenterrando um latinismo...",
+            "Chamando um poeta parnasiano...",
+            "Pedindo emprestado um monóculo...",
+            "Escovando as vogais...",
+            "Perguntando à avó o que é 'pusilânime'...",
+            "Recitando Camões de improviso...",
+            "Suavizando o palavrão com cera de abelha...",
+            "Convocando um barão falido para ajudar..."
+        ];
+
+        const sorte = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        function escolherEstilo() {
+            if (modo.value !== "caos") return modo.value;
+            return sorte(Object.keys(estilos));
+        }
+
+        function juntarLista(itens) {
+            if (itens.length === 1) return itens[0];
+            return itens.slice(0, -1).join(", ") + " e " + itens[itens.length - 1];
+        }
+
+        function gerarInsulto(texto) {
+            const estilo = escolherEstilo();
+            const e = estilos[estilo];
+            const palavras = texto.toLowerCase().replace(/[.,!?;:]/g, "").split(/\s+/);
+            const achadas = [...new Set(palavras.filter(p => dicionario[p]))];
+
+            let frase;
+            if (achadas.length) {
+                const traducoes = achadas.map(p => dicionario[p]);
+                frase = sorte(molduras).replace("{x}", juntarLista(traducoes));
+            } else {
+                // Sub e adj são escolhidos de forma independente, mas ambos são
+                // sintagmas que funcionam em qualquer frase do estilo.
+                frase = sorte(e.frases)
+                    .replace("{sub}", sorte(e.subs))
+                    .replace("{adj}", sorte(e.adjs));
+            }
+
+            if (Math.random() < 0.5) frase += " " + sorte(e.fechos);
+
+            const nivel = Math.floor(Math.random() * 5) + 1;
+            const titulos = [
+                "Nível: Plebeu com ambições",
+                "Nível: Escrivão de província",
+                "Nível: Bacharel de meia-tigela",
+                "Nível: Diplomata do Império",
+                "Nível: Academia Brasileira de Letras (ameaçada)"
+            ];
+            return { frase, nivel, titulo: titulos[nivel - 1] };
+        }
+
+        function digitarTexto(texto, callback) {
+            clearInterval(digitando);
+            textoResultado.textContent = "";
+            textoResultado.classList.add('cursor');
+            let i = 0;
+            digitando = setInterval(() => {
+                textoResultado.textContent += texto[i];
+                i++;
+                if (i >= texto.length) {
+                    clearInterval(digitando);
+                    textoResultado.classList.remove('cursor');
+                    if (callback) callback();
+                }
+            }, 25);
+        }
+
+        function mostrarEstrelas(nivel, titulo) {
+            erudicao.classList.remove('hidden');
+            erudicao.textContent = `${"★".repeat(nivel)}${"☆".repeat(5 - nivel)}  ·  ${titulo}`;
+        }
+
+        function iniciarCarregamento() {
+            overlay.classList.remove('hidden');
+            mensagemCarregando.textContent = sorte(mensagensCarregando);
+            intervaloMensagens = setInterval(() => {
+                mensagemCarregando.textContent = sorte(mensagensCarregando);
+            }, 350);
+        }
+
+        function pararCarregamento() {
+            clearInterval(intervaloMensagens);
+            overlay.classList.add('hidden');
+        }
+
+        function traduzir() {
+            const texto = inputPlebeu.value.trim();
+
+            if (!texto) {
+                textoResultado.textContent = "Tens de digitar algo primeiro, ó criatura desprovida de iniciativa.";
+                textoResultado.className = "text-red-500 font-['Playfair_Display'] text-xl italic text-center";
+                return;
+            }
+
+            textoResultado.className = "text-yellow-400 font-['Playfair_Display'] text-xl italic text-center";
+            erudicao.classList.add('hidden');
+            [btnCopiar, btnWhats, btnOutra].forEach(b => b.classList.add('hidden'));
+            iniciarCarregamento();
+
+            setTimeout(() => {
+                pararCarregamento();
+                const { frase, nivel, titulo } = gerarInsulto(texto);
+                ultimoInsulto = `"${frase}"`;
+                digitarTexto(ultimoInsulto, () => {
+                    mostrarEstrelas(nivel, titulo);
+                    [btnCopiar, btnWhats, btnOutra].forEach(b => b.classList.remove('hidden'));
+                });
+                resultadoBox.classList.remove('tremer');
+                void resultadoBox.offsetWidth;
+                resultadoBox.classList.add('tremer');
+            }, 1200 + Math.random() * 800);
+        }
+
+        btnTraduzir.addEventListener('click', traduzir);
+        btnOutra.addEventListener('click', traduzir);
+
+        inputPlebeu.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) traduzir();
+        });
+
+        btnCopiar.addEventListener('click', async () => {
+            const limpo = ultimoInsulto.replace(/"/g, '');
+            try {
+                await navigator.clipboard.writeText(limpo);
+                btnCopiar.textContent = "Ofensa Copiada!";
+            } catch {
+                btnCopiar.textContent = "Não consegui copiar, copie à mão";
+            }
+            setTimeout(() => btnCopiar.textContent = "Copiar Insulto", 2000);
+        });
+
+        btnWhats.addEventListener('click', () => {
+            const msg = `${ultimoInsulto.replace(/"/g, '')} 🎩`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        });
+    </script>
+</body>
+</html>

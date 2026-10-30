@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maratona de Sofá | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Impede que o usuário selecione o texto do botão enquanto clica freneticamente */
+        .no-select { user-select: none; -webkit-user-select: none; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake-animation { animation: shake 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-6">
+    
+    <!-- Conteúdo Principal -->
+    <div class="max-w-2xl w-full bg-white border border-gray-200 rounded-xl p-8 shadow-sm flex flex-col text-center">
+        
+        <h1 class="text-4xl md:text-5xl font-black tracking-tight text-green-600 mb-2">Maratona de Sofá</h1>
+        <p class="text-gray-600 mb-8">
+            Complete os 5.000 metros (1 clique = 1 metro). <br>
+            <span class="font-bold text-red-500">Atenção:</span> Se você parar de clicar por mais de 3 segundos, terá uma cãibra no dedo e voltará para a largada.
+        </p>
+
+        <!-- Display de Progresso -->
+        <div class="mb-8">
+            <div class="text-6xl md:text-8xl font-black text-gray-800 mb-2" id="display-metros">
+                0<span class="text-2xl md:text-4xl text-gray-400">m</span>
+            </div>
+            <p class="text-sm font-bold uppercase tracking-widest text-gray-500" id="status-texto">Pronto para a largada</p>
+        </div>
+
+        <!-- Barra de Progresso (Inútil, pois a pessoa mal vai ver ela andar) -->
+        <div class="w-full h-4 bg-gray-200 rounded-full overflow-hidden mb-10">
+            <div id="barra-progresso" class="h-full bg-green-500 w-0 transition-all duration-75"></div>
+        </div>
+
+        <!-- Botão de Ação -->
+        <button id="btn-passo" class="no-select w-full py-12 bg-green-600 text-white font-black text-3xl md:text-4xl rounded-xl hover:bg-green-500 active:bg-green-700 active:scale-95 transition-all shadow-[0_8px_0_rgb(21,128,61)] active:shadow-[0_0px_0_rgb(21,128,61)] active:translate-y-2 flex flex-col items-center gap-2">
+            <span>👟 DAR UM PASSO</span>
+            <span class="text-sm font-normal uppercase tracking-widest opacity-75">Não pare!</span>
+        </button>
+
+        <!-- Mensagem de Fracasso (Escondida por padrão) -->
+        <div id="msg-caibra" class="hidden mt-8 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 font-bold shake-animation">
+            🚑 CÃIBRA NO DEDO INDICADOR! Você parou por 3 segundos. O sedentarismo cobrou seu preço e você voltou ao início.
+        </div>
+        
+        <!-- Mensagem de Vitória (Quase impossível) -->
+        <div id="msg-vitoria" class="hidden mt-8 p-6 bg-yellow-100 border-2 border-yellow-500 rounded-lg text-yellow-700">
+            <h2 class="text-2xl font-black mb-2">🏆 VOCÊ CONSEGUIU!</h2>
+            <p>Foram 5.000 cliques de puro sedentarismo. Você perdeu cerca de 15 minutos da sua vida e 0 calorias. Parabéns!</p>
+        </div>
+
+    </div>
+
+    <script>
+        const btnPasso = document.getElementById('btn-passo');
+        const displayMetros = document.getElementById('display-metros');
+        const barraProgresso = document.getElementById('barra-progresso');
+        const statusTexto = document.getElementById('status-texto');
+        const msgCaibra = document.getElementById('msg-caibra');
+        const msgVitoria = document.getElementById('msg-vitoria');
+
+        let metros = 0;
+        const meta = 5000;
+        let timerCaibra = null;
+        let corridaIniciada = false;
+        const TEMPO_LIMITE = 3000; // 3 segundos
+
+        btnPasso.addEventListener('pointerdown', (e) => {
+            // Se já ganhou, ignora
+            if (metros >= meta) return;
+
+            // Esconde mensagens de erro anteriores
+            msgCaibra.classList.add('hidden');
+            msgCaibra.classList.remove('shake-animation');
+            
+            // Incrementa distância
+            metros++;
+            corridaIniciada = true;
+            
+            // Atualiza UI
+            displayMetros.innerHTML = `${metros}<span class="text-2xl md:text-4xl text-gray-400">m</span>`;
+            const porcentagem = (metros / meta) * 100;
+            barraProgresso.style.width = `${porcentagem}%`;
+            
+            // Feedback de status
+            if (metros < 100) {
+                statusTexto.textContent = "Ritmo leve. Aquecendo os tendões...";
+            } else if (metros < 1000) {
+                statusTexto.textContent = "Já passou a dor inicial. Continue!";
+            } else if (metros < 4000) {
+                statusTexto.textContent = "O suor é no mouse, a glória é na tela!";
+            } else {
+                statusTexto.textContent = "Reta final! Não ouse parar agora!";
+            }
+
+            // Verifica vitória
+            if (metros >= meta) {
+                ganharCorrida();
+                return;
+            }
+
+            // Reseta o cronômetro da cãibra
+            clearTimeout(timerCaibra);
+            timerCaibra = setTimeout(sofrerCaibra, TEMPO_LIMITE);
+        });
+
+        // Previne menu de contexto ao clicar muito rápido no celular/tablet
+        btnPasso.addEventListener('contextmenu', e => e.preventDefault());
+
+        function sofrerCaibra() {
+            if (!corridaIniciada) return;
+            
+            // Pune o usuário zerando tudo
+            metros = 0;
+            corridaIniciada = false;
+            
+            // Atualiza UI para o fracasso
+            displayMetros.innerHTML = `0<span class="text-2xl md:text-4xl text-gray-400">m</span>`;
+            barraProgresso.style.width = `0%`;
+            statusTexto.textContent = "Desclassificado por inatividade.";
+            
+            // Mostra o alerta (removendo e adicionando a classe para engatilhar a animação novamente)
+            msgCaibra.classList.remove('hidden');
+            void msgCaibra.offsetWidth; // Trigger reflow para reiniciar a animação
+            msgCaibra.classList.add('shake-animation');
+        }
+
+        function ganharCorrida() {
+            clearTimeout(timerCaibra);
+            corridaIniciada = false;
+            statusTexto.textContent = "Atleta de Elite do Sofá";
+            btnPasso.disabled = true;
+            btnPasso.classList.add('opacity-50', 'cursor-not-allowed');
+            msgVitoria.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

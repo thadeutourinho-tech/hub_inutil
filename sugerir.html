@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugira sua ferramenta | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .honeypot { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col items-center justify-center p-6">
+    <main class="max-w-2xl w-full bg-white border-2 border-gray-200 rounded-xl p-8 md:p-12 shadow-sm">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-indigo-600 mb-4">Sugira sua ferramenta</h1>
+            <p class="text-lg text-gray-600">Tem uma ideia de ferramenta que não resolve nada? Conte pra gente.</p>
+        </div>
+
+        <form id="suggestion-form" class="space-y-6">
+            <div class="honeypot" aria-hidden="true">
+                <label for="website">Website</label>
+                <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div>
+                <label for="nome-ferramenta" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Nome da ferramenta</label>
+                <input id="nome-ferramenta" name="nome" type="text" maxlength="80" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-600 focus:bg-white transition-colors">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">E-mail</label>
+                <input id="email" name="email" type="email" required class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-600 focus:bg-white transition-colors">
+            </div>
+
+            <div>
+                <label for="descricao" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Descrição da ferramenta</label>
+                <textarea id="descricao" name="descricao" minlength="20" maxlength="500" required rows="5" class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-600 focus:bg-white transition-colors resize-y"></textarea>
+                <p id="contador-descricao" class="mt-1 text-right text-xs text-gray-500">0 / 500</p>
+            </div>
+
+            <div class="flex items-start gap-3">
+                <input id="consentimento" name="consentimento" type="checkbox" required class="mt-1 h-4 w-4 accent-indigo-600">
+                <label for="consentimento" class="text-sm text-gray-600">
+                    Concordo que meu e-mail seja usado somente para responder à minha sugestão, conforme a LGPD.
+                </label>
+            </div>
+
+            <button id="btn-enviar" type="submit" class="w-full px-8 py-4 bg-indigo-600 text-white font-bold text-lg uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition-colors shadow-lg">
+                Enviar sugestão
+            </button>
+            <p id="mensagem-envio" class="min-h-6 text-center text-sm text-gray-600" role="status" aria-live="polite"></p>
+        </form>
+
+        <p id="aviso-email" class="mt-4 text-center text-xs text-gray-500">Seu e-mail não será publicado.</p>
+        <p id="mensagem-sucesso" class="hidden text-center text-lg font-bold text-green-700" role="status" aria-live="polite">
+            Obrigado! Sua ferramenta entrou na fila de análise do gato.
+        </p>
+    </main>
+
+    <script>
+        const FORM_ENDPOINT = 'https://formspree.io/f/SEU_ID_AQUI';
+        const suggestionForm = document.getElementById('suggestion-form');
+        const descriptionField = document.getElementById('descricao');
+        const descriptionCounter = document.getElementById('contador-descricao');
+        const submitButton = document.getElementById('btn-enviar');
+        const submitMessage = document.getElementById('mensagem-envio');
+        const successMessage = document.getElementById('mensagem-sucesso');
+        const emailNotice = document.getElementById('aviso-email');
+
+        descriptionField.addEventListener('input', () => {
+            descriptionCounter.textContent = `${descriptionField.value.length} / 500`;
+        });
+
+        suggestionForm.addEventListener('submit', async event => {
+            event.preventDefault();
+
+            if (!suggestionForm.reportValidity()) return;
+            if (suggestionForm.querySelector('[name="website"]').value) return;
+
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+            submitMessage.textContent = '';
+
+            try {
+                const response = await fetch(FORM_ENDPOINT, {
+                    method: 'POST',
+                    headers: { Accept: 'application/json' },
+                    body: new FormData(suggestionForm)
+                });
+                if (!response.ok) {
+                    throw new Error(`O endpoint respondeu com HTTP ${response.status}.`);
+                }
+
+                suggestionForm.classList.add('hidden');
+                emailNotice.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+            } catch {
+                submitMessage.textContent = 'Não foi possível enviar agora. Tente novamente em alguns minutos.';
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        });
+    </script>
+</body>
+</html>

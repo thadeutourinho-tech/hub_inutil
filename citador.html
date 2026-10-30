@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Citador Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-[#f4f1ea] text-gray-900 min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-2xl w-full text-center space-y-8">
+        <h1 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-12">Sabedoria Ancestral Irrelevante</h1>
+        
+        <div id="quote-container" class="min-h-[250px] flex flex-col justify-center transition-opacity duration-300">
+            <p id="quote-text" class="text-4xl md:text-5xl italic mb-8 leading-tight">Carregando a sabedoria...</p>
+            <p id="quote-author" class="text-xl font-bold uppercase tracking-wide"></p>
+            <p id="quote-book" class="text-md text-gray-600 italic mt-2"></p>
+        </div>
+
+        <button id="btn-generate" class="mt-12 px-8 py-4 bg-gray-900 text-white text-lg uppercase tracking-widest hover:bg-gray-700 transition-colors shadow-xl" disabled>
+            Iluminar minha mente
+        </button>
+    </div>
+
+    <script src="quotes.js"></script>
+    <script>
+        let quotes = [];
+
+        const quoteText = document.getElementById('quote-text');
+        const generateButton = document.getElementById('btn-generate');
+
+        function carregarCitacoes() {
+            const data = window.CITACOES;
+            if (!Array.isArray(data) || data.length === 0 || !data.every(quote =>
+                quote &&
+                ['texto', 'autor', 'obra'].every(field =>
+                    typeof quote[field] === 'string' && quote[field].trim()
+                )
+            )) {
+                quoteText.innerText = 'Não foi possível carregar as citações. Verifique se quotes.json está publicado junto com esta página e se o site está sendo servido por HTTP/HTTPS.';
+                return;
+            }
+
+            quotes = data;
+            generateButton.disabled = false;
+            mostrarCitacaoAleatoria();
+        }
+
+        carregarCitacoes();
+
+        function mostrarCitacaoAleatoria() {
+            if (quotes.length === 0) return;
+            
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            const container = document.getElementById('quote-container');
+            
+            // Efeito de transição suave
+            container.style.opacity = 0;
+            
+            setTimeout(() => {
+                document.getElementById('quote-text').innerText = `"${quote.texto}"`;
+                document.getElementById('quote-author').innerText = quote.autor;
+                document.getElementById('quote-book').innerText = quote.obra;
+                container.style.opacity = 1;
+            }, 300);
+        }
+
+        document.getElementById('btn-generate').addEventListener('click', mostrarCitacaoAleatoria);
+    </script>
+</body>
+</html>

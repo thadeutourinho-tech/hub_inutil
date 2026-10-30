@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complicador de Links | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col items-center p-6">
+    
+    <!-- Conteúdo Principal -->
+    <div class="max-w-3xl w-full bg-white border-2 border-gray-200 rounded-xl p-8 md:p-12 shadow-sm">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-purple-600 mb-4">Complicador de Links</h1>
+            <p class="text-lg text-gray-600">
+                Por que enviar um link simples se você pode transformá-lo num pesadelo de quatro linhas que parece um vírus?
+            </p>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label for="url-input" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Link Inocente Original</label>
+                <input type="text" id="url-input" placeholder="exemplo.com" class="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-lg text-lg focus:outline-none focus:border-purple-600 focus:bg-white transition-colors" autocomplete="off">
+            </div>
+
+            <button id="btn-complicar" class="w-full px-8 py-4 bg-purple-600 text-white font-bold text-lg uppercase tracking-widest rounded-lg hover:bg-purple-800 transition-colors shadow-lg">
+                Piorar este link
+            </button>
+        </div>
+
+        <!-- Área de Resultado (Oculta por padrão) -->
+        <div id="result-box" class="hidden mt-12 pt-8 border-t-2 border-dashed border-gray-200">
+            <p class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2 text-center">Sua Aberração Clicável:</p>
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-300 relative group">
+                <p id="result-text" class="text-gray-800 font-mono text-sm break-all mb-4"></p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button id="btn-copiar" class="w-full px-4 py-3 bg-gray-900 text-white font-bold uppercase tracking-wider rounded text-sm hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                        Copiar link
+                    </button>
+                    <button id="btn-compartilhar" class="w-full px-4 py-3 bg-purple-600 text-white font-bold uppercase tracking-wider rounded text-sm hover:bg-purple-800 transition-colors flex items-center justify-center gap-2">
+                        Compartilhar link gerado
+                    </button>
+                </div>
+                <p id="share-feedback" class="text-sm text-center mt-3" role="status" aria-live="polite"></p>
+            </div>
+            <p class="text-center text-xs text-gray-500 mt-4">
+                * O link continua funcionando perfeitamente, apenas perdeu a dignidade.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const btnComplicar = document.getElementById('btn-complicar');
+        const btnCopiar = document.getElementById('btn-copiar');
+        const btnCompartilhar = document.getElementById('btn-compartilhar');
+        const urlInput = document.getElementById('url-input');
+        const resultBox = document.getElementById('result-box');
+        const resultText = document.getElementById('result-text');
+        const shareFeedback = document.getElementById('share-feedback');
+
+        // Dicionário de parâmetros inúteis
+        const parametrosAbsurdos = {
+            'utm_source': 'vozes_da_minha_cabeca',
+            'utm_medium': 'desespero_absoluto',
+            'utm_campaign': 'perda_de_tempo',
+            'urgencia': 'falsissima',
+            'motivo': 'nenhum_aparente',
+            'nivel_de_caos': '9000',
+            'rastreamento': '100_imaginario',
+            'status_existencial': 'em_crise',
+            'bateria_celular': '12_porcento',
+            'relevancia': 'negativa',
+            'aceitar_termos': 'involuntariamente'
+        };
+
+        btnComplicar.addEventListener('click', () => {
+            let inputValue = urlInput.value.trim();
+            
+            if (!inputValue) {
+                alert("Por favor, insira um link para estragarmos.");
+                return;
+            }
+
+            // Adiciona protocolo se o usuário digitar apenas "site.com"
+            if (!inputValue.startsWith('http://') && !inputValue.startsWith('https://')) {
+                inputValue = 'https://' + inputValue;
+            }
+
+            try {
+                const url = new URL(inputValue);
+                
+                // Injeta os parâmetros na URL
+                for (const [key, value] of Object.entries(parametrosAbsurdos)) {
+                    url.searchParams.append(key, value);
+                }
+                
+                // Adiciona um hash aleatório de bônus
+                const numeroAleatorio = Math.floor(Math.random() * 99999);
+                url.hash = `arrependimento_${numeroAleatorio}`;
+
+                // Exibe o resultado
+                resultText.textContent = url.toString();
+                resultBox.classList.remove('hidden');
+                
+                // Reseta o texto do botão de copiar
+                btnCopiar.textContent = "Copiar link";
+                btnCopiar.classList.remove('bg-green-600');
+                btnCopiar.classList.add('bg-gray-900');
+                shareFeedback.textContent = '';
+
+            } catch (error) {
+                alert("Link inválido. Insira uma URL no formato correto.");
+            }
+        });
+
+        // Lógica de cópia para a área de transferência
+        btnCopiar.addEventListener('click', async () => {
+            const textoParaCopiar = resultText.textContent;
+            try {
+                await navigator.clipboard.writeText(textoParaCopiar);
+                btnCopiar.textContent = "Copiado!";
+                btnCopiar.classList.remove('bg-gray-900');
+                btnCopiar.classList.add('bg-green-600');
+                shareFeedback.textContent = 'Link copiado.';
+            } catch (error) {
+                console.error('Erro ao copiar o link:', error);
+                shareFeedback.textContent = 'Não foi possível copiar o link. Verifique a permissão do navegador.';
+            }
+        });
+
+        btnCompartilhar.addEventListener('click', async () => {
+            const url = resultText.textContent;
+            const mensagem = `Criei esse link absurdo com o Complicador de Link do Hub Inútil. Crie um você também: ${url}`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Complicador de Link | Hub Inútil',
+                        text: mensagem,
+                        url
+                    });
+                    shareFeedback.textContent = 'Link compartilhado.';
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        console.error('Erro ao compartilhar o link:', error);
+                        shareFeedback.textContent = 'Não foi possível compartilhar o link.';
+                    }
+                }
+                return;
+            }
+
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+            const shareWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+            if (shareWindow) {
+                shareFeedback.textContent = 'Abrindo o WhatsApp para compartilhar.';
+            } else {
+                shareFeedback.textContent = 'O navegador bloqueou a janela de compartilhamento. Permita pop-ups e tente novamente.';
+            }
+        });
+
+        // Permite apertar Enter no input
+        urlInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                btnComplicar.click();
+            }
+        });
+    </script>
+</body>
+</html>

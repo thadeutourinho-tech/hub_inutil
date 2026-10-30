@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Epifanias | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-6">
+
+    <div class="max-w-2xl w-full bg-white border border-gray-200 rounded-xl p-8 shadow-sm mb-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black tracking-tight text-blue-700 mb-3">Gerador de Epifanias</h1>
+            <p class="text-gray-600">
+                Transforme qualquer tropeço banal em uma aula de liderança, resiliência e mindset corporativo.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label for="input-banal" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">O que aconteceu de inútil hoje?</label>
+                <input type="text" id="input-banal" maxlength="120" placeholder="Ex: derrubei café na minha calça" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-lg">
+            </div>
+
+            <div>
+                <label for="estilo" class="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Estilo do post</label>
+                <select id="estilo" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="fundador">Fundador(a) visionário(a)</option>
+                    <option value="coach">Coach motivacional</option>
+                    <option value="gratidao">Gratidão que termina em venda</option>
+                </select>
+            </div>
+
+            <button id="btn-gerar" class="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-lg hover:bg-blue-800 transition-colors shadow-md">
+                Extrair Insight Estratégico 🚀
+            </button>
+        </div>
+    </div>
+
+    <div id="box-post" class="hidden max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden mb-12 relative">
+
+        <div id="loading-overlay" class="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center">
+            <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-700 rounded-full animate-spin mb-4"></div>
+            <p id="loading-text" class="text-blue-700 font-bold animate-pulse text-sm uppercase tracking-wider">Sinergizando...</p>
+        </div>
+
+        <div class="p-4 flex items-center gap-3 border-b border-gray-100">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0" aria-hidden="true">👔</div>
+            <div>
+                <h3 id="autor-nome" class="font-bold text-gray-900 leading-tight">Visionário(a) Estratégico(a)</h3>
+                <p id="autor-cargo" class="text-xs text-gray-500">CEO & Founder | Top Voice em Nada | Entusiasta de Mindset</p>
+                <p class="text-xs text-gray-400 mt-0.5">Agora mesmo • 🌍</p>
+            </div>
+        </div>
+
+        <div class="p-4 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed" id="texto-post"></div>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50 flex flex-wrap gap-2 justify-end items-center">
+            <div class="flex gap-2">
+                <button id="btn-outro" class="px-4 py-2 bg-white border border-blue-300 text-blue-700 font-bold text-xs rounded hover:bg-blue-50 transition-colors uppercase tracking-wide">
+                    Outro post
+                </button>
+                <button id="btn-copiar" class="px-4 py-2 bg-blue-100 text-blue-700 font-bold text-xs rounded hover:bg-blue-200 transition-colors uppercase tracking-wide">
+                    Copiar Texto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnGerar = document.getElementById('btn-gerar');
+        const btnOutro = document.getElementById('btn-outro');
+        const btnCopiar = document.getElementById('btn-copiar');
+        const boxPost = document.getElementById('box-post');
+        const textoPost = document.getElementById('texto-post');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+        const inputBanal = document.getElementById('input-banal');
+        const estiloSelect = document.getElementById('estilo');
+        const autorNome = document.getElementById('autor-nome');
+        const autorCargo = document.getElementById('autor-cargo');
+
+        let ultimaAcao = "";
+        let intervaloLoading = null;
+        let timeoutGerar = null;
+
+        const sorte = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        // Fisher-Yates em cópia, para não bagunçar o array original
+        function embaralhar(arr) {
+            const copia = [...arr];
+            for (let i = copia.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copia[i], copia[j]] = [copia[j], copia[i]];
+            }
+            return copia;
+        }
+
+        // Normaliza a entrada: tira espaços, pontuação final e coloca em minúscula
+        function normalizarAcao(texto) {
+            let acao = texto.trim().replace(/[.!?…]+$/u, "").trim();
+            if (!acao) acao = "deixei a caneta cair no chão";
+            return acao.charAt(0).toLowerCase() + acao.slice(1);
+        }
+
+        // Lições ligadas a palavras-chave do que aconteceu
+        const licoesPorTema = [
+            { chaves: /caf[eé]|ch[aá]|suco|leite|refri/i, licao: "☕ Café derramado é o primeiro aviso de que o dia precisa de um plano B." },
+            { chaves: /[oô]nibus|metr[oô]|tr[aâ]nsito|uber|carro|moto|estacionamento/i, licao: "🚌 Quem perde a condução aprende a chegar antes ao próprio futuro." },
+            { chaves: /chuva|guarda-?chuva|molhad|ensopad/i, licao: "🌧️ Tempestade não se negocia. Atravessa-se." },
+            { chaves: /wi-?fi|internet|sinal|conex|caiu a rede/i, licao: "📶 Sem conexão não há sinergia, há silêncio. E o silêncio também é dado." },
+            { chaves: /caneta|l[aá]pis|papel|chave|celular|carteira|[oó]culos|carregador/i, licao: "🔑 Quando o objeto some, descobrimos quem realmente controla a mesa." },
+            { chaves: /reuni[aã]o|call|zoom|meet|apresent|slide/i, licao: "🎙️ Uma apresentação ruim é um protótipo de lição. Agora temos dados." },
+            { chaves: /elevador|escada|porta|tranc/i, licao: "🛗 Ficar parado no meio do caminho também é uma forma de avançar." },
+            { chaves: /dormi|atras|acordei|sono|despertador/i, licao: "⏰ Acordar tarde não é fracasso. É um pivô de cronograma." },
+            { chaves: /errei|erro|esqueci|troquei|confund/i, licao: "🧭 Errar rápido é o único processo que nunca terminamos de aprender." }
+        ];
+
+        const licoesGenericas = [
+            "💡 O fracasso é apenas um feedback do mercado invisível.",
+            "🚀 Resiliência não é aguentar pancada. É fazer networking com a dor.",
+            "📈 O verdadeiro ROI não está nos números, está no mindset.",
+            "🎯 Se você não está falhando rápido, está aprendendo devagar demais.",
+            "🤝 Acordar cedo não te faz melhor que ninguém, mas o onboarding da vida sim."
+        ];
+
+        // Estilos: cada um tem seu gancho, sua abertura, seu fechamento e suas hashtags
+        const estilos = {
+            fundador: {
+                nome: "Visionário(a) Estratégico(a)",
+                cargo: "CEO & Founder | Top Voice em Nada | Entusiasta de Mindset",
+                ganchos: [
+                    "Hoje o universo me deu uma aula dura sobre liderança.",
+                    "Parei tudo que estava fazendo no meio do expediente para refletir sobre isso.",
+                    "O mercado ensina nos momentos em que menos esperamos."
+                ],
+                abertura: a => `Eu estava simplesmente na minha rotina quando, do nada, ${a}.`,
+                epifania: [
+                    "Naquele exato momento, percebi que a disrupção não avisa quando chega. Ela simplesmente invade o seu ecossistema.",
+                    "Foi um choque de governança. Entendi que o verdadeiro líder não evita o caos, ele escala a resiliência."
+                ],
+                introLicoes: "Isso me fez consolidar 3 hard skills essenciais para o novo normal:",
+                cta: [
+                    "E você? Como lida com as adversidades do seu ecossistema? Deixe nos comentários. 👇",
+                    "Concorda com essa visão holística? Comente abaixo e vamos debater! 👇"
+                ],
+                tags: "#Mindset #Liderança #Inovação #Resiliência #Empreendedorismo"
+            },
+            coach: {
+                nome: "Coach de Alta Performance",
+                cargo: "Mentor de Mentes Abundantes | Palestrante TEDx (inscrição pendente)",
+                ganchos: [
+                    "Acredite: esse momento foi um presente disfarçado.",
+                    "Ninguém te conta isso, mas o dia em que tudo dá errado é o dia em que você cresce.",
+                    "Se você leu até aqui, você é do tipo que não desiste. Vamos lá."
+                ],
+                abertura: a => `Foi assim: ${a}. Respira. E aí veio a lição.`,
+                epifania: [
+                    "Você não precisa de um dia perfeito. Precisa de um dia honesto consigo mesmo.",
+                    "Cada tropeço é um degrau que o universo colocou para você subir mais alto."
+                ],
+                introLicoes: "Três lições para levar desse momento:",
+                cta: [
+                    "Marque alguém que precisa ouvir isso hoje. ❤️",
+                    "Qual foi o seu tropeço favorito da semana? Conta pra mim! 👇"
+                ],
+                tags: "#Motivação #Crescimento #Mindset #Foco #Gratidão"
+            },
+            gratidao: {
+                nome: "Gratidão Sempre",
+                cargo: "Empreendedor(a) grato(a) | Criador do Método Gratidão 10x",
+                ganchos: [
+                    "Hoje eu agradeço por mais uma lição de vida. 🙏",
+                    "Gratidão é a chave. Mesmo quando tudo parece dar errado.",
+                    "Obrigado, universo, por esse dia que me ensinou tanto."
+                ],
+                abertura: a => `Hoje, ${a}. Agradeço por cada segundo desse momento. 🙏`,
+                epifania: [
+                    "Sabe o que essa situação me ensinou? Que a gratidão transforma qualquer problema em oportunidade.",
+                    "E o melhor: essa mesma atitude pode transformar a sua vida também."
+                ],
+                introLicoes: "Pelo que sou grato hoje:",
+                cta: [
+                    "Quer aprender o Método Gratidão 10x? Vagas limitadas, o link está no meu perfil. 🔗",
+                    "Comente GRATIDÃO e eu te mando o material completo no direct. 💬"
+                ],
+                tags: "#Gratidão #Propósito #Mindset #Vendas #VagasLimitadas"
+            }
+        };
+
+        const mensagensLoading = [
+            "Alinhando expectativas...",
+            "Sinergizando a governança...",
+            "Pivotando o mindset...",
+            "Calculando o ROI emocional..."
+        ];
+
+        // Escolhe 3 lições: primeiro as que casam com a palavra-chave, depois completa com genéricas
+        function escolherLicoes(acao) {
+            const temáticas = licoesPorTema.filter(t => t.chaves.test(acao)).map(t => t.licao);
+            const escolhidas = [...new Set(temáticas)].slice(0, 3);
+            for (const g of embaralhar(licoesGenericas)) {
+                if (escolhidas.length >= 3) break;
+                if (!escolhidas.includes(g)) escolhidas.push(g);
+            }
+            return escolhidas;
+        }
+
+        function montarPost(acao, estiloKey) {
+            const e = estilos[estiloKey];
+            const licoes = escolherLicoes(acao);
+            return [
+                sorte(e.ganchos),
+                "",
+                e.abertura(acao),
+                "",
+                "Sim, você leu certo.",
+                "",
+                sorte(e.epifania),
+                "",
+                e.introLicoes,
+                "",
+                ...licoes.map(l => l + "\n"),
+                sorte(e.cta),
+                "",
+                e.tags
+            ].join("\n").replace(/\n{3,}/g, "\n\n");
+        }
+
+        function atualizarAutor(estiloKey) {
+            autorNome.textContent = estilos[estiloKey].nome;
+            autorCargo.textContent = estilos[estiloKey].cargo;
+        }
+
+        function gerar() {
+            const estiloKey = estiloSelect.value;
+            ultimaAcao = normalizarAcao(inputBanal.value);
+
+            boxPost.classList.remove('hidden');
+            loadingOverlay.classList.remove('hidden');
+            btnCopiar.textContent = "Copiar Texto";
+            btnGerar.disabled = true;
+            btnOutro.disabled = true;
+
+            let step = 0;
+            clearInterval(intervaloLoading);
+            intervaloLoading = setInterval(() => {
+                loadingText.textContent = mensagensLoading[step % mensagensLoading.length];
+                step++;
+            }, 600);
+
+            clearTimeout(timeoutGerar);
+            timeoutGerar = setTimeout(() => {
+                clearInterval(intervaloLoading);
+                loadingOverlay.classList.add('hidden');
+                atualizarAutor(estiloKey);
+                textoPost.textContent = montarPost(ultimaAcao, estiloKey);
+                btnGerar.disabled = false;
+                btnOutro.disabled = false;
+            }, 2500);
+        }
+
+        btnGerar.addEventListener('click', gerar);
+
+        // Outro post reaproveita a mesma entrada, mas sorteia de novo o estilo de frases
+        btnOutro.addEventListener('click', () => {
+            if (!ultimaAcao) return gerar();
+            const estiloKey = estiloSelect.value;
+            textoPost.textContent = montarPost(ultimaAcao, estiloKey);
+            btnCopiar.textContent = "Copiar Texto";
+        });
+
+        inputBanal.addEventListener('keydown', e => {
+            if (e.key === 'Enter') gerar();
+        });
+
+        btnCopiar.addEventListener('click', async () => {
+            try {
+                const rodape = "\n\ncriado com o Gerador de Epifanias para LinkedIn - [link em breve]";
+                await navigator.clipboard.writeText(textoPost.textContent + rodape);
+                btnCopiar.textContent = "Copiado! ✓";
+            } catch {
+                btnCopiar.textContent = "Não consegui copiar";
+            }
+            setTimeout(() => btnCopiar.textContent = "Copiar Texto", 2000);
+        });
+    </script>
+</body>
+</html>

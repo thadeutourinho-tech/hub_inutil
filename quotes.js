@@ -1,0 +1,1002 @@
+window.CITACOES = [
+    {
+        "texto":  "É um grande barco êste.",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "— Ó Potestade, disse, sublimada!",
+        "autor":  "Luís de Camões",
+        "obra":  "Os Lusíadas"
+    },
+    {
+        "texto":  "É verdade, padeceu mais.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "Era a infancia da arte.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "E o Ramalhete continuou deshabitado.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "O portão está aberto.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "Eram oito horas da noite.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Vejamos se tem razão.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "Um creado trouxe o café.",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "É meu parente!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "Entrementes o pequeno ia crescendo.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "O livro é cearense.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "Depois ficou meditabundo.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Tinham acabado d\u0027almoçar.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "— Estou bem aqui.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "É um bom sacco.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Camões!--É a poesia.",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "Taes coisas são possiveis.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "Era um insaciavel!",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "O vento só não basta.",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "Quando deram fé estavam amigados.",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "É uma diatribe, mas eloquente.",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "São tão lindas, as borboletas!",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Era triste!",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "A vida é o mal.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "É de mais!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "— Já vos disse que não.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "Manteriam a religião catholica.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "Anda, sobe.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Era sua mulher.",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "Vou expor-lhe summariamente o caso.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "Era um feliz tempo esse.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Affonso partiu.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "Lá vou abaixo recebel-o.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "Há muitos anos--disse-me êle.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "E diremos o porque.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "— Me parece que si.",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "É meu patricio!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "Era alto, delgado, divinamente perfeito.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "Tranquillo, esperou.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "É outra questão importante.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Decidiu casar.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "Acho muita poesia n\u0027este quadro.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "É duro!",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Não é.",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "— Lá vai a giboia esmoer.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "De accordo; são falsissimos!",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "Estou já toda tremula!",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "Agora está livre!",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "E todavia era applaudido!",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "É tarde.",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "O Anselmo tinha uma filha.",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "Uns jantam, outros são jantados.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "É outra noção, e tremenda!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "Mas, vai!",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "As côrtes desconfiam d\u0027el-rei.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "Estevão ficou alguns instantes pensativo.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Ah, mas êles lhes diriam!",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "Lá iremos.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "— É verdade, respondeu este.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Ahi começou uma vida desconsolada.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "Sou eu!",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "E saiu.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Ja morto estava.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "— Lá vou soltal-o.",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "É meu parceiro!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "E os ditinhos pullulavam.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "— Elle veiu, pae.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "O perú está comido.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "— Casou no ar!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "É uma verdade.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "Não me podia lembrar.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Nunca tiveste amor.",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "Em geral não era estimado.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "É uma desequilibrada, uma doente.",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "Matava-me ou enlouquecia-me!",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "— Seu ou não seu, acabou-se!",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "E sou de v.",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "Julgava merecer-lhe mais affectos.",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Levava o coração retalhado!",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "A dôr não era irredutivel.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "Andaram obras no nosso telhado.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "Sou o vosso verdadeiro pai.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "É injusta a critica.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "Mas, ai triste!",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Brava gente!",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "Pois lá iremos.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "— É verdade que nos humilhâmos!",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Pedro da Maia amava!",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "No entanto, fiz reparo n\u0027ella.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "— O senhor está com outro.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Saudade brava.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "Estava tão bonita!",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "Eram as Lapidarias.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "— É o Ezequiel menina Luiza.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "— Veiu bem.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "— Não voltou.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Estavam casados havia tres annos.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "Conheci que estava perdido.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "Esse impressionou-me pelo apuro.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Não sei, mulher!",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "Houve um pequeno silencio.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "Entre ellas está a mulher.",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "— É assim, tornou Leonor.",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "Continuava a odial-a.",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "Com tudo Deus existe!",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "Não o encontrou.",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Vou matal-os!",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "A vida é um calvario.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "Tambem notei que corcovava.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "Diabo alçou brados de triumpho.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "Tem phrases de singular energia.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "A peleja passou aos jornaes.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Muito folgava!",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "Tinha saude e robustez.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "Deixem-me concluir, disse elle friamente.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Não a conhecia.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "— Bem sei, disse elle.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "— Vá--disse eu.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Ah quem a visse!",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "Rubião fez um gesto negativo.",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "Sublimidade não é vergonha.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "O contrario é que espantava.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "— Bem vieste.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "Os pareceres divergiram muito.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Que bom que tinha sido!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "A neve augmentava.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "Era o official de marinha.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Diz isto o orphão.",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "Mas então, é aquillo!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "Não sei!",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "— E não seria só ella.",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "Não se fallaram.",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "Mas as lousas são frias.",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "Aqui anda machina, apostára!",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Era lindo!",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "Cantar não basta.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "— E accumulaste civilisação, Jacintho!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "A descoberta assombrou o Diabo.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "Os decretos desagradaram a todos.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "O roupão ia andando.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Êle era andaluz.",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "O extranho levantou-se e sahiu.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "Porém nem sequer o ouviam.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Veiu o Champagne.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "Estava a cêa na mesa.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "Todos dormiam.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Nisto em que estou.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "Não gesticules, vou morrer.",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "Era Fradique Mendes.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "Esse gosta, e gosta muito.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "A cauâm piou, além.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "Estava escrevendo a teu pae.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Para se certificar chamou Juliana.",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "Perguntei-lhe que povo era aquelle.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "Depois passou a elephantes.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Ninguem no mundo o ouviu.",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "A maçã parecia um creme!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "Ha periodos que são quadros.",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "Isaura soltou um grito.",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "O taverneiro recussou formalmente.",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "Ai pode!",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "A minha gratidão será eterna.",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Aquillo é que era luxo!",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "Resar é mais.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "É uma noticia.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "Os dois credores ficaram embascados.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "Podiam ahi apodrecer.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "— Está perdoado.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Ramón meneou negativamente a cabeça.",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "— Já; virei amanhã ou depois.",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "— É verdade, respondeu Morgan.",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    },
+    {
+        "texto":  "Ninguem os conhecia.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Os Maias: episodios da vida romantica"
+    },
+    {
+        "texto":  "Affonso tinha dezesete.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Amor de Salvação"
+    },
+    {
+        "texto":  "Mas apareceram uns cabelos louros.",
+        "autor":  "Eça de Queirós",
+        "obra":  "Contos"
+    },
+    {
+        "texto":  "Amor o quer.",
+        "autor":  "Luís de Camões",
+        "obra":  "Obras Completas de Luis de Camões, Tomo II"
+    },
+    {
+        "texto":  "— Que é!",
+        "autor":  "Machado de Assis",
+        "obra":  "Quincas Borba"
+    },
+    {
+        "texto":  "Vidigal esfregava as mãos, iluminado.",
+        "autor":  "Eça de Queirós",
+        "obra":  "A correspondência de Fradique Mendes: memórias e notas"
+    },
+    {
+        "texto":  "Até cartas lhe manda.",
+        "autor":  "Fialho de Almeida",
+        "obra":  "Aves Migradoras"
+    },
+    {
+        "texto":  "— Irapuam falou; disse.",
+        "autor":  "José Martiniano de Alencar",
+        "obra":  "Iracema: com uma noticia biographica do auctor"
+    },
+    {
+        "texto":  "Mãe, filha e filho almoçaram.",
+        "autor":  "Machado de Assis",
+        "obra":  "Papeis Avulsos"
+    },
+    {
+        "texto":  "Foi um anjo para ella!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O Primo Bazilio: Episodio Domestico"
+    },
+    {
+        "texto":  "— Alpedrinha--disse ella.",
+        "autor":  "Camilo Castelo Branco",
+        "obra":  "Scenas Contemporaneas"
+    },
+    {
+        "texto":  "Houve primeiramente um silencio.",
+        "autor":  "H. Rider (Henry Rider) Haggard",
+        "obra":  "As Minas de Salomão"
+    },
+    {
+        "texto":  "Como esse olhar é dôce!",
+        "autor":  "João de Deus",
+        "obra":  "Flores do Campo"
+    },
+    {
+        "texto":  "Pois é uma grandissima calumnia!",
+        "autor":  "Eça de Queirós",
+        "obra":  "O crime do padre Amaro, scenas da vida devota"
+    },
+    {
+        "texto":  "Momentos antes--vejam o contraste!",
+        "autor":  "Maria Amalia Vaz de Carvalho",
+        "obra":  "Alguns homens do meu tempo: impressões litterarias"
+    },
+    {
+        "texto":  "— Isso é horrivel!",
+        "autor":  "Manuel Pinheiro Chagas",
+        "obra":  "A Lenda da Meia-Noite"
+    },
+    {
+        "texto":  "— É exacto.",
+        "autor":  "Aluísio Azevedo",
+        "obra":  "O Cortiço"
+    },
+    {
+        "texto":  "Nem pode ser.",
+        "autor":  "Antero de Quental",
+        "obra":  "Raios de extincta luz: poesias ineditas (1859-1863)"
+    },
+    {
+        "texto":  "Disse tudo.",
+        "autor":  "Wenceslau de Moraes",
+        "obra":  "Paisagens da China e do Japão"
+    },
+    {
+        "texto":  "Havia de gostar.",
+        "autor":  "Alberto Leal Barradas Monteiro Braga",
+        "obra":  "Contos d\u0027Aldeia"
+    },
+    {
+        "texto":  "Tem o universo.",
+        "autor":  "Raul Brandão",
+        "obra":  "Os Pobres: Precedido de uma Carta-Prefacio de Guerra Junqueiro"
+    },
+    {
+        "texto":  "— Eu sei!",
+        "autor":  "Eça de Queirós",
+        "obra":  "A Cidade e as Serras"
+    },
+    {
+        "texto":  "Em tres mezes ficou boa.",
+        "autor":  "Machado de Assis",
+        "obra":  "Historias Sem Data"
+    },
+    {
+        "texto":  "Houve a maior agitação.",
+        "autor":  "Manuel Emílio Gomes de Carvalho",
+        "obra":  "Os deputados brasileiros nas Côrtes Geraes de 1821"
+    },
+    {
+        "texto":  "— Estou formado.",
+        "autor":  "Machado de Assis",
+        "obra":  "A Mao e A Luva"
+    },
+    {
+        "texto":  "Nem eu esperava.",
+        "autor":  "Abel Acácio de Almeida Botelho",
+        "obra":  "Amor Crioulo: vida argentina"
+    },
+    {
+        "texto":  "— Estou velha!",
+        "autor":  "Machado de Assis",
+        "obra":  "Memorias Posthumas de Braz Cubas"
+    },
+    {
+        "texto":  "— Isso lá me parece muito!",
+        "autor":  "Jules Verne",
+        "obra":  "Da terra à lua, viagem directa em 97 horas e 20 minutos"
+    }
+];
