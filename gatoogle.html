@@ -22,6 +22,9 @@
             <button id="btn-gato" type="button" class="w-full px-8 py-4 bg-orange-600 text-white font-bold text-lg uppercase tracking-widest rounded-lg hover:bg-orange-700 transition-colors shadow-lg">
                 Deixar o gato escrever
             </button>
+            <button id="btn-ver-resultado" type="button" class="hidden w-full px-8 py-4 border-2 border-orange-600 bg-white text-orange-600 font-bold text-lg uppercase tracking-widest rounded-lg hover:bg-orange-50 transition-colors shadow-lg">
+                Ver resultado no Google
+            </button>
             <p id="status-gato" class="min-h-6 text-sm text-gray-500" role="status" aria-live="polite"></p>
         </div>
 
@@ -31,11 +34,12 @@
     <script>
         const searchField = document.getElementById('busca-gato');
         const writeButton = document.getElementById('btn-gato');
+        const resultButton = document.getElementById('btn-ver-resultado');
         const statusMessage = document.getElementById('status-gato');
         const letters = 'abcdefghijklmnopqrstuvwxyzáàâãäåæçéèêëíìîïñóòôõöøúùûüýÿ';
         const punctuation = '?!.,';
         let typingTimer;
-        let searchTimer;
+        let generatedSearchText = '';
 
         function randomInteger(minimum, maximum) {
             return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
@@ -65,53 +69,39 @@
 
         writeButton.addEventListener('click', () => {
             clearTimeout(typingTimer);
-            clearTimeout(searchTimer);
 
-            const searchText = generateCatSearch();
-            const searchTab = window.open('about:blank', '_blank');
-            if (searchTab) {
-                searchTab.opener = null;
-            }
+            generatedSearchText = generateCatSearch();
 
             searchField.value = '';
+            resultButton.classList.add('hidden');
             statusMessage.textContent = '';
             writeButton.disabled = true;
             writeButton.classList.add('opacity-60', 'cursor-wait');
 
             let index = 0;
             function typeNextCharacter() {
-                searchField.value += searchText[index];
+                searchField.value += generatedSearchText[index];
                 index += 1;
 
-                if (index < searchText.length) {
+                if (index < generatedSearchText.length) {
                     typingTimer = setTimeout(typeNextCharacter, randomInteger(80, 200));
                     return;
                 }
 
-                searchTimer = setTimeout(() => {
-                    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+                typingTimer = setTimeout(() => {
+                    resultButton.classList.remove('hidden');
+                    statusMessage.textContent = 'O gato terminou de escrever. Clique para ver o resultado.';
                     writeButton.disabled = false;
                     writeButton.classList.remove('opacity-60', 'cursor-wait');
-
-                    try {
-                        if (searchTab && !searchTab.closed) {
-                            searchTab.location.href = searchUrl;
-                            return;
-                        }
-
-                        const searchLink = document.createElement('a');
-                        searchLink.href = searchUrl;
-                        searchLink.target = '_blank';
-                        searchLink.rel = 'noopener noreferrer';
-                        searchLink.click();
-                        statusMessage.textContent = 'O navegador pode bloquear a nova aba. Permita pop-ups para abrir a busca.';
-                    } catch {
-                        statusMessage.textContent = 'Não foi possível abrir a busca neste navegador.';
-                    }
-                }, 1200);
+                }, 800);
             }
 
             typeNextCharacter();
+        });
+
+        resultButton.addEventListener('click', () => {
+            const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(generatedSearchText)}`;
+            window.open(searchUrl, '_blank', 'noopener,noreferrer');
         });
     </script>
 </body>
