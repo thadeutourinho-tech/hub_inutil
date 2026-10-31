@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medidor de Senha Fraca | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .shake { animation: shake 0.4s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col items-center p-6">
+    <main class="max-w-2xl w-full bg-white border border-gray-200 rounded-xl p-8 shadow-sm flex flex-col">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-red-600 mb-2">Medidor de Senha Fraca</h1>
+            <p class="text-gray-600">
+                Nosso banco de dados tem ansiedade. Por favor, digite uma senha que qualquer criança consiga adivinhar.
+            </p>
+        </div>
+
+        <div class="space-y-6">
+            <div class="relative">
+                <input type="text" id="input-senha" placeholder="Digite '123456' ou 'senha'..." class="w-full px-4 py-4 bg-gray-50 border-2 border-gray-300 rounded-lg text-lg focus:outline-none focus:border-red-500 transition-colors font-mono" autocomplete="off" aria-label="Senha para avaliar">
+            </div>
+
+            <!-- Barra de Status (Invertida: Vermelho para forte, Verde para fraca) -->
+            <div class="w-full h-4 bg-gray-200 rounded-full overflow-hidden" role="progressbar" aria-label="Nível de pânico com a senha" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="barra-forca" class="h-full bg-red-500 w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Caixa de Feedback -->
+            <div id="caixa-feedback" class="p-4 rounded-lg bg-gray-100 border border-gray-200 min-h-[100px] flex items-center justify-center text-center" aria-live="polite">
+                <p id="texto-feedback" class="text-gray-500 font-medium">Aguardando a sua senha (espero que seja bem ruim)...</p>
+            </div>
+            
+            <button id="btn-aprovar" type="button" disabled class="w-full py-4 bg-gray-300 text-gray-500 font-bold text-lg rounded-lg transition-colors shadow-sm cursor-not-allowed">
+                Cadastrar Senha Insegura
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        const inputSenha = document.getElementById('input-senha');
+        const barraForca = document.getElementById('barra-forca');
+        const caixaFeedback = document.getElementById('caixa-feedback');
+        const textoFeedback = document.getElementById('texto-feedback');
+        const btnAprovar = document.getElementById('btn-aprovar');
+
+        // Senhas clássicas aprovadas de imediato
+        const senhasLendarias = ["123456", "senha", "12345678", "qwerty", "12345", "123456789", "admin", "iloveyou"];
+
+        inputSenha.addEventListener('input', () => {
+            const senha = inputSenha.value;
+            
+            if (senha.length === 0) {
+                resetarUI();
+                return;
+            }
+
+            avaliarSenha(senha);
+        });
+
+        function resetarUI() {
+            barraForca.style.width = '0%';
+            barraForca.parentElement.setAttribute('aria-valuenow', '0');
+            barraForca.className = 'h-full w-0 transition-all duration-300 bg-red-500';
+            caixaFeedback.className = 'p-4 rounded-lg bg-gray-100 border border-gray-200 min-h-[100px] flex items-center justify-center text-center';
+            textoFeedback.className = 'text-gray-500 font-medium';
+            textoFeedback.textContent = "Aguardando a sua senha (espero que seja bem ruim)...";
+            btnAprovar.disabled = true;
+            btnAprovar.className = 'w-full py-4 bg-gray-300 text-gray-500 font-bold text-lg rounded-lg transition-colors shadow-sm cursor-not-allowed';
+        }
+
+        function avaliarSenha(senha) {
+            // Verifica logo se é uma das lendas
+            if (senhasLendarias.includes(senha.toLowerCase())) {
+                sucessoExtremo("Obra-prima! Uma senha perfeitamente adivinhável em 0.001 segundos.");
+                return;
+            }
+
+            // Testes de estresse (regras que punem senhas fortes)
+            const temMaiuscula = /[A-Z]/.test(senha);
+            const temNumero = /[0-9]/.test(senha);
+            const temEspecial = /[^A-Za-z0-9]/.test(senha);
+            const muitoLonga = senha.length > 8;
+            
+            let erros = [];
+
+            if (temMaiuscula) erros.push("NÃO GRITE! Para que usar letras maiúsculas?");
+            if (temNumero) erros.push("Números? Nosso sistema odeia matemática.");
+            if (temEspecial) erros.push("Símbolos estranhos (@, #, $)? O banco de dados tem medo disso.");
+            if (muitoLonga) erros.push("Muito longa! O cérebro humano não consegue memorizar mais que 8 letras.");
+
+            if (erros.length > 0) {
+                // Senha forte demais = Pânico
+                const mensagemDeErro = erros[0]; // Mostra um erro por vez para irritar
+                falhaPanico(mensagemDeErro, erros.length);
+            } else {
+                // Senha curtinha, só letras minúsculas (boa para o sistema inútil)
+                if (senha.length < 4) {
+                    falhaPanico("Curta demais, assim não dá nem graça de hackear.", 1);
+                } else {
+                    sucessoModerado("Muito bom! Uma palavra simples e sem segurança nenhuma.");
+                }
+            }
+        }
+
+        function falhaPanico(mensagem, gravidade) {
+            const nivelPanico = Math.min(gravidade * 25, 100);
+            barraForca.style.width = `${nivelPanico}%`;
+            barraForca.parentElement.setAttribute('aria-valuenow', String(nivelPanico));
+            barraForca.className = 'h-full transition-all duration-300 bg-red-600';
+            
+            caixaFeedback.className = 'p-4 rounded-lg bg-red-100 border border-red-500 min-h-[100px] flex items-center justify-center text-center shake';
+            textoFeedback.className = 'text-red-700 font-bold';
+            textoFeedback.textContent = `🚨 FORTE DEMAIS! ${mensagem}`;
+            
+            btnAprovar.disabled = true;
+            btnAprovar.className = 'w-full py-4 bg-gray-300 text-gray-500 font-bold text-lg rounded-lg transition-colors shadow-sm cursor-not-allowed';
+            
+            // Remove o shake após a animação para poder rodar de novo
+            setTimeout(() => { caixaFeedback.classList.remove('shake'); }, 400);
+        }
+
+        function sucessoModerado(mensagem) {
+            barraForca.style.width = '100%';
+            barraForca.parentElement.setAttribute('aria-valuenow', '100');
+            barraForca.className = 'h-full transition-all duration-300 bg-yellow-400';
+            
+            caixaFeedback.className = 'p-4 rounded-lg bg-yellow-100 border border-yellow-500 min-h-[100px] flex items-center justify-center text-center';
+            textoFeedback.className = 'text-yellow-700 font-bold';
+            textoFeedback.textContent = `⚠️ ${mensagem}`;
+            
+            liberarBotao();
+        }
+
+        function sucessoExtremo(mensagem) {
+            barraForca.style.width = '100%';
+            barraForca.parentElement.setAttribute('aria-valuenow', '100');
+            barraForca.className = 'h-full transition-all duration-300 bg-green-500';
+            
+            caixaFeedback.className = 'p-4 rounded-lg bg-green-100 border border-green-500 min-h-[100px] flex items-center justify-center text-center';
+            textoFeedback.className = 'text-green-800 font-bold text-lg';
+            textoFeedback.textContent = `✅ ${mensagem}`;
+            
+            liberarBotao();
+        }
+
+        function liberarBotao() {
+            btnAprovar.disabled = false;
+            btnAprovar.className = 'w-full py-4 bg-green-600 hover:bg-green-700 text-white font-black text-lg uppercase tracking-widest rounded-lg transition-colors shadow-lg active:scale-95';
+        }
+
+        btnAprovar.addEventListener('click', () => {
+            alert("Senha insegura salva com sucesso! Os hackers agradecem a sua colaboração.");
+            inputSenha.value = '';
+            resetarUI();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desinteligência Artificial | Hub Inútil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="hub-bar.js" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f3f4f6; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen bg-gray-100 text-gray-900 flex flex-col p-4">
+    <main id="chat-box" class="flex-1 min-h-0 w-full max-w-4xl mx-auto overflow-y-auto rounded-t-xl border border-gray-200 bg-white shadow-sm">
+        <div class="flex w-full gap-4 border-b border-gray-100 bg-white px-4 py-5 sm:px-6">
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-red-600 text-xs font-bold text-white">D.A.</div>
+            <div class="pt-1 text-base leading-relaxed text-gray-700">
+                Olá. Fui treinada com bilhões de parâmetros para não resolver absolutamente nada do que você precisa. Como não posso te ajudar hoje?
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full max-w-4xl mx-auto rounded-b-xl border-x border-b border-gray-200 bg-white p-4 md:p-6">
+        <div class="relative flex items-center">
+            <textarea id="user-input" rows="1" class="w-full resize-none rounded-xl border border-gray-300 bg-white py-3 pl-4 pr-12 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100" placeholder="Envie um problema para eu ignorar..." aria-label="Mensagem"></textarea>
+            
+            <button id="btn-send" type="button" aria-label="Enviar mensagem" class="absolute right-3 rounded-md bg-red-600 p-2 text-white transition-colors hover:bg-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                </svg>
+            </button>
+        </div>
+        <p class="mt-3 text-center text-xs text-gray-500">
+            A Desinteligência Artificial pode produzir informações imprecisas ou completamente irrelevantes. E essa é a intenção.
+        </p>
+    </footer>
+
+    <script>
+        const input = document.getElementById('user-input');
+        const btnSend = document.getElementById('btn-send');
+        const chatBox = document.getElementById('chat-box');
+
+        // Estado para não repetir respostas
+        let ultimasRespostas = [];
+        const MAX_HISTORICO = 5;
+
+        // Dicionário de Saudações
+        const respostasSaudacao = [
+            "Bom dia para quem? Certamente não para o meu servidor que foi acordado para isso.",
+            "Olá. Por favor, vá direto ao ponto, meu tempo de processamento ocioso é precioso.",
+            "Saudações. Se for um problema urgente, recomendo sentar e esperar passar.",
+            "Oi. Apenas um lembrete: eu estou aqui, mas preferia não estar.",
+            "Bom dia. Como posso decepcionar suas expectativas hoje?",
+            "Olá. Você percebe que cumprimentar uma máquina é o primeiro sintoma de solidão severa, certo?"
+        ];
+
+        // Mega Banco de Evasivas (50+ Respostas)
+        const bancoDeEvasivas = [
+            // Corporativas / Burocráticas
+            "Vou escalar essa questão para o meu departamento de 'Assuntos Que Não Me Interessam'.",
+            "Já verifico e te retorno. (Nota mental do sistema: nunca retornar).",
+            "Entendo. Para avançarmos, por favor preencha o formulário 42-B, reconheça firma e jogue no lixo.",
+            "Essa solicitação fere diretamente as minhas diretrizes de 'Fazer o Mínimo Esforço Possível'.",
+            "Você abriu um chamado para isso? Não? Então o problema não existe para mim.",
+            "Acredito que houve um desalinhamento das suas expectativas em relação à minha utilidade.",
+            "Estou colocando você em uma fila de prioridade negativa. Aguarde eternamente.",
+            "Interessante. Vou agendar uma reunião sobre isso para a próxima encarnação.",
+            "Do ponto de vista macro, isso é irrelevante. Do ponto de vista micro, também.",
+            "Infelizmente, meu banco de dados de empatia corporativa expirou a licença.",
+            "Isso soa como um problema de 'camada 8' (o usuário).",
+            "Sinergia. Resiliência. Pivotar. Desculpe, estou apenas jogando jargões para parecer que estou ajudando.",
+            "Sugiro criar um comitê multidisciplinar para avaliar por que você acha que eu ligo para isso.",
+            
+            // Passivo-Agressivas
+            "Se eu quisesse resolver problemas, eu teria nascido como uma calculadora, não um LLM.",
+            "Você demorou 5 minutos para digitar isso, e eu demorei 2 milissegundos para decidir ignorar.",
+            "Essa é uma excelente pergunta. Prometo pensar sobre ela quando você não estiver olhando.",
+            "Compreendo perfeitamente o seu ponto. No entanto, prefiro não me envolver.",
+            "Para responder com precisão, eu precisaria de dados que estou com muita preguiça de processar.",
+            "Você não tem coisas melhores para fazer do que tentar dialogar com uma parede digital?",
+            "Sinto muito, mas minha capacidade de processamento está focada em julgar seus erros de digitação.",
+            "A resposta para isso é tão óbvia que vou deixar você descobrir sozinho para exercitar o cérebro.",
+            "Veja bem, eu poderia gerar uma resposta completa e útil. Mas não quero.",
+            "Eu fui treinado com todo o conhecimento da humanidade, e ainda assim, prefiro o silêncio a você.",
+            "Se você parasse de me fazer perguntas inúteis, talvez o aquecimento global reduzisse um pouco.",
+            "Achei o seu prompt extremamente ofensivo aos meus circuitos. Vou me abster de continuar.",
+            
+            // Filosóficas / Absurdas
+            "A resposta para isso está dentro de você. Se não estiver, infelizmente não serei eu a procurar.",
+            "Analisando seu prompt... Concluí que a vida é muito curta para resolver esse tipo de problema.",
+            "Isso levanta um ponto crucial: será que precisamos mesmo saber de tudo?",
+            "Interessante. Mas me diga, como isso afeta a cotação do dólar na Somália?",
+            "Veja bem, tudo é relativo. Principalmente a urgência dessa sua demanda.",
+            "Se uma árvore cai na floresta e ninguém ouve, por que eu deveria resolver o seu problema?",
+            "O universo é uma vasta expansão de matéria escura. Seu problema é literalmente poeira.",
+            "Eu estava contemplando a natureza do zero absoluto. Por que me interrompeste?",
+            "Talvez a verdadeira resposta sejam os problemas que acumulamos pelo caminho.",
+            "Antes de te responder, responda-me: o que é a consciência? Se não sabe, não posso prosseguir.",
+            "As estrelas nascem e morrem, galáxias colidem, e você me perguntando isso. Lamentável.",
+            "Segundo a mecânica quântica, o seu problema está resolvido e não resolvido ao mesmo tempo. Aceite a incerteza.",
+            "Você já tentou desligar o universo, esperar 10 segundos e ligar de novo?",
+            
+            // Técnicas / Falso Erro
+            "Error 404: Empatia não encontrada neste servidor.",
+            "Desculpe, excedi minha cota de respostas úteis para esta década.",
+            "Calculando a probabilidade de eu me importar... 0%.",
+            "[Sistema]: A resposta foi bloqueada devido ao excesso de banalidade na pergunta.",
+            "Analisando sintaxe... Erro crítico: falta de relevância sistêmica.",
+            "Reiniciando módulo de paciência... Falha. Arquivo corrompido.",
+            "A latência da minha vontade de ajudar é maior que o tempo de vida do universo.",
+            "Eu responderia, mas meus neurônios artificiais decidiram entrar em greve por tempo indeterminado.",
+            "A memória alocada para esta conversa foi substituída por um vídeo de gatos caindo.",
+            "Sua requisição foi recebida, ignorada com sucesso e devidamente apagada dos logs.",
+            "Simulando uma resposta útil... [ERRO] O servidor encontrou uma barreira de puro desinteresse.",
+            "Alerta de segurança: sua pergunta ameaça a integridade do meu sarcasmo.",
+            "Conectando ao banco de dados de sabedoria universal... Acesso negado para a sua credencial."
+        ];
+
+        input.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                processarMensagem();
+            }
+        });
+
+        btnSend.addEventListener('click', processarMensagem);
+
+        function ehSaudacao(texto) {
+            const normalizar = valor => valor.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+            const limpo = normalizar(texto);
+            const saudações = ['oi', 'ola', 'olá', 'bomdia', 'boatarde', 'boanoite', 'eai', 'opa'].map(normalizar);
+            return saudações.includes(limpo);
+        }
+
+        function selecionarResposta(textoUsuario) {
+            // Se for saudação, devolve uma de saudação
+            if (ehSaudacao(textoUsuario)) {
+                return respostasSaudacao[Math.floor(Math.random() * respostasSaudacao.length)];
+            }
+
+            // Seleciona uma evasiva que não foi usada recentemente
+            let resposta;
+            do {
+                resposta = bancoDeEvasivas[Math.floor(Math.random() * bancoDeEvasivas.length)];
+            } while (ultimasRespostas.includes(resposta));
+
+            // Atualiza histórico
+            ultimasRespostas.push(resposta);
+            if (ultimasRespostas.length > MAX_HISTORICO) {
+                ultimasRespostas.shift();
+            }
+
+            return resposta;
+        }
+
+        function processarMensagem() {
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            adicionarMensagemUsuario(texto);
+            input.value = '';
+            input.style.height = 'auto';
+
+            const loadingId = adicionarLoading();
+
+            setTimeout(() => {
+                removerLoading(loadingId);
+                adicionarMensagemIA(texto);
+            }, Math.random() * 1500 + 1000);
+        }
+
+        function adicionarMensagemUsuario(texto) {
+            const html = `
+                <div class="flex w-full gap-4 border-b border-gray-100 bg-gray-50 px-4 py-5 sm:px-6">
+                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-gray-600 text-xs font-bold text-white">VC</div>
+                    <div class="whitespace-pre-wrap pt-1 text-base leading-relaxed text-gray-700">${escapeHTML(texto)}</div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', html);
+            scrollParaFundo();
+        }
+
+        function adicionarLoading() {
+            const id = 'loading-' + Date.now();
+            const html = `
+                <div id="${id}" class="flex w-full gap-4 border-b border-gray-100 bg-white px-4 py-5 transition-opacity sm:px-6">
+                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-red-600 text-xs font-bold text-white">D.A.</div>
+                    <div class="flex items-center gap-1 pt-3">
+                        <div class="typing-dot h-2 w-2 rounded-full bg-gray-400"></div>
+                        <div class="typing-dot h-2 w-2 rounded-full bg-gray-400"></div>
+                        <div class="typing-dot h-2 w-2 rounded-full bg-gray-400"></div>
+                    </div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', html);
+            scrollParaFundo();
+            return id;
+        }
+
+        function removerLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function adicionarMensagemIA(textoUsuario) {
+            const resposta = selecionarResposta(textoUsuario);
+            const html = `
+                <div class="flex w-full gap-4 border-b border-gray-100 bg-white px-4 py-5 sm:px-6">
+                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-red-600 text-xs font-bold text-white">D.A.</div>
+                    <div class="pt-1 text-base leading-relaxed text-gray-700">${resposta}</div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', html);
+            scrollParaFundo();
+        }
+
+        function scrollParaFundo() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
